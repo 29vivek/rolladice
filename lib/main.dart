@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-
+import 'dart:math';
 void main() => runApp(MyApp());
 
 class MyApp extends StatefulWidget {
@@ -14,7 +14,7 @@ class MyAppState extends State<MyApp> {
 
   int _diceOne = 1;
   int _diceTwo = 2;
-  bool _isDark = false;
+  bool _isDark = true;
 
   ThemeData _themeDataLight =ThemeData(
     primarySwatch: Colors.deepOrange,
@@ -80,11 +80,8 @@ class MyAppState extends State<MyApp> {
           tooltip: 'Roll the dice',
           onPressed: () {
             setState(() {
-              if(_isDark)
-                _isDark = false;
-              else 
-                _isDark = true;
-              
+              _diceOne = Random().nextInt(6) + 1;
+              _diceTwo = Random().nextInt(6) + 1;
             });
           },
         ),
