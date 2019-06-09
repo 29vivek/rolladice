@@ -1,29 +1,16 @@
 import 'package:flutter/material.dart';
-import 'dart:math';
+import 'package:rolladice/screens/dice_screen.dart';
+import 'package:rolladice/screens/settings_screen.dart';
+import 'package:rolladice/models/settings_model.dart';
 import 'package:scoped_model/scoped_model.dart';
 
 void main() => runApp(MyApp());
 
-class DiceModel extends Model {
-  int _diceOne = 1;
-  int _diceTwo = 2;
-
-
-  int get diceOne => _diceOne;
-  int get diceTwo => _diceTwo;
-
-  void roll() {
-    _diceOne = Random().nextInt(6) + 1;
-    _diceTwo = Random().nextInt(6) + 1;
-    notifyListeners();
-  }
-}
-
 class MyApp extends StatelessWidget {
 
-  // bool _isDark = true;
+  final SettingsModel _settingsModel = SettingsModel();
 
-  ThemeData _themeDataLight =ThemeData(
+  final ThemeData _themeDataLight =ThemeData(
     primarySwatch: Colors.deepOrange,
     brightness: Brightness.light,
     accentColor: Colors.deepOrangeAccent,
@@ -32,7 +19,7 @@ class MyApp extends StatelessWidget {
     )
   );
 
-  ThemeData _themeDataDark =ThemeData(
+  final ThemeData _themeDataDark =ThemeData(
     primarySwatch: Colors.deepOrange,
     brightness: Brightness.dark,
     accentColor: Colors.deepOrangeAccent,
@@ -43,70 +30,25 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Dice Roll',
-      theme: _themeDataLight,
-      home: DiceScreen(),
+    return ScopedModel<SettingsModel>(
+      model: _settingsModel,
+      child: ScopedModelDescendant(
+        builder: (BuildContext context, Widget child, SettingsModel model) {
+          return  MaterialApp(
+            title: 'Dice Roll',
+            theme: model.isDark ? _themeDataDark : _themeDataLight,
+            routes: {
+              '/': (context) => DiceScreen(),
+              '/settings': (context) => SettingsScreen(),
+            },
+          );
+        },
+          
+      )
     );
   }
 
 }
 
-class DiceScreen extends StatelessWidget {
-  final DiceModel diceModel = DiceModel();
 
-  @override
-  Widget build(BuildContext context) {
-    return ScopedModel<DiceModel>(
-      model: diceModel,
-      child: Scaffold(
-        appBar: AppBar(
-          title: Text('Roll'),
-          actions: <Widget>[
-            IconButton(
-              icon: Icon(Icons.settings),
-              onPressed: () {},
-            ),
-          ],
-        ),
-        body: Center(
-          child: Row(
-            children: <Widget>[
-              Expanded(
-                child: ScopedModelDescendant(
-                  builder: (BuildContext context, Widget child, DiceModel model) {
-                    return Image.asset(
-                      'images/dice-${'light'}-${model.diceOne}.png',
-                      color: Colors.deepOrange,
-                    ); 
-                  },
-                ), 
-              ),
-              Expanded(
-                child: ScopedModelDescendant(
-                  builder: (BuildContext context, Widget child, DiceModel model) {
-                    return Image.asset(
-                      'images/dice-${'light'}-${model.diceTwo}.png',
-                      color: Colors.deepOrange,
-                    ); 
-                  },
-                ), 
-              ),
-            ],
-          ),
-        ),
-        floatingActionButton: FloatingActionButton.extended(
-          icon: Icon(Icons.casino),
-          label: Text('Roll'),
-          tooltip: 'Roll the dice',
-          onPressed: () {
-            diceModel.roll();
-            print('rolled dice');
-          },
-        ),
-        floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-      ),
-    );
-  }
 
-}
