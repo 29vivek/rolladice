@@ -3,13 +3,19 @@ import 'package:rolladice/screens/dice_screen.dart';
 import 'package:rolladice/screens/settings_screen.dart';
 import 'package:rolladice/models/settings_model.dart';
 import 'package:scoped_model/scoped_model.dart';
+import 'package:rolladice/screens/loading_screen.dart';
 
-void main() => runApp(MyApp());
+void main() {
+  SettingsModel model = SettingsModel();
+  model.loadData();
+  runApp(MyApp(model));
+}
 
 class MyApp extends StatelessWidget {
 
-  final SettingsModel _settingsModel = SettingsModel();
-
+  final SettingsModel _settingsModel;
+  MyApp(this._settingsModel);
+  
   final ThemeData _themeDataLight =ThemeData(
     primarySwatch: Colors.deepOrange,
     brightness: Brightness.light,
@@ -34,14 +40,19 @@ class MyApp extends StatelessWidget {
       model: _settingsModel,
       child: ScopedModelDescendant(
         builder: (BuildContext context, Widget child, SettingsModel model) {
-          return  MaterialApp(
-            title: 'Dice Roll',
-            theme: model.isDark ? _themeDataDark : _themeDataLight,
-            routes: {
-              '/': (context) => DiceScreen(),
-              '/settings': (context) => SettingsScreen(),
-            },
-          );
+          if(model.isLoading) {
+            return LoadingScreen();
+          }  
+          else {
+            return MaterialApp(
+              title: 'Dice Roll',
+              theme: model.isDark ? _themeDataDark : _themeDataLight,
+              routes: {
+                '/': (context) => DiceScreen(),
+                '/settings': (context) => SettingsScreen(),
+              },
+            );
+          }
         },
           
       )
@@ -49,6 +60,3 @@ class MyApp extends StatelessWidget {
   }
 
 }
-
-
-

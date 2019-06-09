@@ -10,8 +10,9 @@ class DiceScreen extends StatelessWidget {
   
   @override
   Widget build(BuildContext context) {
-    final String mode =ScopedModel.of<SettingsModel>(context).isDark ? 'dark' : 'light';
-
+    final SettingsModel model = ScopedModel.of<SettingsModel>(context);
+    final String mode = model.isDark ? 'dark' : 'light';
+  
     return ScopedModel<DiceModel>(
       model: _diceModel,
       child: Scaffold(
@@ -22,7 +23,7 @@ class DiceScreen extends StatelessWidget {
               icon: Icon(Icons.settings),
               onPressed: () {
                 Navigator.pushNamed(context, '/settings');
-              },
+              },  
             ),
           ],
         ),
@@ -56,14 +57,10 @@ class DiceScreen extends StatelessWidget {
           icon: Icon(Icons.casino),
           label: Text('Roll'),
           tooltip: 'Roll the dice',
-          onPressed: () {
-            _diceModel.roll();
-            print('rolled dice');
-          },
+          onPressed: () => _diceModel.roll(),
         ),
         floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
       ),
     );
   }
-
 }
