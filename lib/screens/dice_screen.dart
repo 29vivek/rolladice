@@ -12,7 +12,10 @@ class DiceScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final SettingsModel model = ScopedModel.of<SettingsModel>(context);
     final String mode = model.isDark ? 'dark' : 'light';
-  
+
+
+    // wrap the scaffold with scopedmodel to let all its widgets access the model
+    
     return ScopedModel<DiceModel>(
       model: _diceModel,
       child: Scaffold(

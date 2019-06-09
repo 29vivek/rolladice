@@ -8,13 +8,13 @@ class SettingsModel extends Model {
   void loadData() async {
     // Model is still loading data
     _isLoading = true;
-    // show a spinner saying still loading data.
+    // show a spinner saying still loading data now.
     notifyListeners();
 
     SharedPreferences prefs = await SharedPreferences.getInstance();
     _isDark =prefs.getBool('dark_theme') ?? false;
 
-    // loading done
+    // loading done, monitor isLoading variable in the listener to load app now.
     _isLoading = false;
     notifyListeners();
   }

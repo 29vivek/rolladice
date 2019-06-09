@@ -8,6 +8,7 @@ class SettingsScreen extends StatelessWidget {
     final SettingsModel model = ScopedModel.of<SettingsModel>(context);
 
     bool _isChecked =  model.isDark;
+    // initial state of the switch
     return Scaffold(
       appBar: AppBar(
         title: Text('Settings'),
@@ -19,6 +20,7 @@ class SettingsScreen extends StatelessWidget {
         title: Text('Dark Mode'),
         subtitle: Text('Enable a dark theme for lesser eye strain.'),
         onChanged: (value) {
+          // switch on/off - value is the bool value of the switch's current state
           model.toggleDarkMode(value);
         },
       ),
