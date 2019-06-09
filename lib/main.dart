@@ -1,20 +1,26 @@
 import 'package:flutter/material.dart';
 import 'dart:math';
+import 'package:scoped_model/scoped_model.dart';
+
 void main() => runApp(MyApp());
 
-class MyApp extends StatefulWidget {
-  @override
-  State<StatefulWidget> createState() {
-    return MyAppState();
-  }
-
-}
-
-class MyAppState extends State<MyApp> {
-
+class DiceModel extends Model {
   int _diceOne = 1;
   int _diceTwo = 2;
-  bool _isDark = true;
+
+  void roll() {
+    _diceOne = Random().nextInt(6) + 1;
+    _diceTwo = Random().nextInt(6) + 1;
+    notifyListeners();
+  }
+
+  int get diceOne => _diceOne;
+  int get diceTwo => _diceTwo;
+}
+
+class MyApp extends StatelessWidget {
+
+  // bool _isDark = true;
 
   ThemeData _themeDataLight =ThemeData(
     primarySwatch: Colors.deepOrange,
@@ -34,19 +40,25 @@ class MyAppState extends State<MyApp> {
     )
   );
 
-
-  @override
-  void initState() {
-    super.initState();
-
-  }
-
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Dice Roll',
-      theme: _isDark ? _themeDataDark : _themeDataLight,
-      home: Scaffold(
+      theme: _themeDataLight,
+      home: DiceScreen(),
+    );
+  }
+
+}
+
+class DiceScreen extends StatelessWidget {
+  final DiceModel diceModel = DiceModel();
+
+  @override
+  Widget build(BuildContext context) {
+    return ScopedModel<DiceModel>(
+      model: DiceModel(),
+      child: Scaffold(
         appBar: AppBar(
           title: Text('Roll'),
           actions: <Widget>[
@@ -60,16 +72,24 @@ class MyAppState extends State<MyApp> {
           child: Row(
             children: <Widget>[
               Expanded(
-                child: Image.asset(
-                  'images/dice-${_isDark?'dark':'light'}-$_diceOne.png',
-                  color: Colors.deepOrange,
-                ),
+                child: ScopedModelDescendant(
+                  builder: (BuildContext context, Widget child, DiceModel model) {
+                    return Image.asset(
+                      'images/dice-${'light'}-${model.diceOne}.png',
+                      color: Colors.deepOrange,
+                    ); 
+                  },
+                ), 
               ),
               Expanded(
-                child: Image.asset(
-                  'images/dice-${_isDark?'dark':'light'}-$_diceTwo.png',
-                  color: Colors.deepOrange,
-                ),
+                child: ScopedModelDescendant(
+                  builder: (BuildContext context, Widget child, DiceModel model) {
+                    return Image.asset(
+                      'images/dice-${'light'}-${model.diceTwo}.png',
+                      color: Colors.deepOrange,
+                    ); 
+                  },
+                ), 
               ),
             ],
           ),
@@ -79,14 +99,11 @@ class MyAppState extends State<MyApp> {
           label: Text('Roll'),
           tooltip: 'Roll the dice',
           onPressed: () {
-            setState(() {
-              _diceOne = Random().nextInt(6) + 1;
-              _diceTwo = Random().nextInt(6) + 1;
-            });
+            diceModel.roll();
           },
         ),
         floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-      )
+      ),
     );
   }
 
