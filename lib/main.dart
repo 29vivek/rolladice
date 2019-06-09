@@ -8,14 +8,15 @@ class DiceModel extends Model {
   int _diceOne = 1;
   int _diceTwo = 2;
 
+
+  int get diceOne => _diceOne;
+  int get diceTwo => _diceTwo;
+
   void roll() {
     _diceOne = Random().nextInt(6) + 1;
     _diceTwo = Random().nextInt(6) + 1;
     notifyListeners();
   }
-
-  int get diceOne => _diceOne;
-  int get diceTwo => _diceTwo;
 }
 
 class MyApp extends StatelessWidget {
@@ -57,7 +58,7 @@ class DiceScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ScopedModel<DiceModel>(
-      model: DiceModel(),
+      model: diceModel,
       child: Scaffold(
         appBar: AppBar(
           title: Text('Roll'),
@@ -100,6 +101,7 @@ class DiceScreen extends StatelessWidget {
           tooltip: 'Roll the dice',
           onPressed: () {
             diceModel.roll();
+            print('rolled dice');
           },
         ),
         floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
